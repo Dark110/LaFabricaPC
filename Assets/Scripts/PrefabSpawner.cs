@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro; // Asegúrate de incluir esto
 
 public class PrefabSpawner : MonoBehaviour
 {
@@ -15,22 +16,35 @@ public class PrefabSpawner : MonoBehaviour
     public List<PrefabConProbabilidad> prefabsConProbabilidades = new List<PrefabConProbabilidad>();
 
     [Header("Configuración de Spawneo")]
-    public int cantidadASpawnear = 10;
+    public int cantidadInicialASpawnear = 10;
+    public int incrementoPorNivel = 3;
     public Transform puntoDeSpawneo;
     public float intervaloSpawn = 3f;
+    public float intervaloMinimo = 0.5f;
+    public float reduccionPorNivel = 0.3f;
 
-    private int cantidadSpawneada = 0;
+    [Header("UI")]
+    public TextMeshProUGUI textoRonda; // Arrastra aquí tu TextMeshProUGUI desde el inspector
+
+    private int nivel = 1;
 
     void Start()
     {
+        ActualizarTextoRonda();
         if (ValidarProbabilidades())
         {
-            StartCoroutine(SpawnearPrefabsConDelay());
+            StartCoroutine(RondasDeSpawneo());
         }
         else
         {
             Debug.LogError("Las probabilidades no suman 100%. Corrige eso en el inspector.");
         }
+    }
+
+    void ActualizarTextoRonda()
+    {
+        if (textoRonda != null)
+            textoRonda.text = $"Ronda: {nivel}";
     }
 
     bool ValidarProbabilidades()
@@ -43,26 +57,35 @@ public class PrefabSpawner : MonoBehaviour
         return Mathf.Approximately(total, 100f);
     }
 
-    IEnumerator SpawnearPrefabsConDelay()
+    IEnumerator RondasDeSpawneo()
     {
-        while (cantidadSpawneada < cantidadASpawnear)
+        while (true)
         {
-            // Spawnea el primer prefab
-            SpawnearUnPrefab();
-            cantidadSpawneada++;
+            int cantidadASpawnear = cantidadInicialASpawnear + (nivel - 1) * incrementoPorNivel;
+            int cantidadSpawneada = 0;
+            ActualizarTextoRonda();
 
-            if (Random.value < 0.3f) // 30% de probabilidad de spawnear un segundo prefab rápidamente
+            while (cantidadSpawneada < cantidadASpawnear)
             {
-                yield return new WaitForSeconds(Random.Range(0.1f, 0.5f)); // Intervalo corto entre los dos spawns
                 SpawnearUnPrefab();
                 cantidadSpawneada++;
+
+                if (Random.value < 0.3f)
+                {
+                    yield return new WaitForSeconds(Random.Range(0.1f, 0.5f));
+                    SpawnearUnPrefab();
+                    cantidadSpawneada++;
+                }
+
+                yield return new WaitForSeconds(intervaloSpawn);
             }
 
-            // Espera el intervalo normal antes del próximo ciclo
-            yield return new WaitForSeconds(intervaloSpawn);
+            yield return new WaitForSeconds(5f);
+
+            intervaloSpawn = Mathf.Max(intervaloMinimo, intervaloSpawn - reduccionPorNivel);
+            nivel++;
         }
     }
-
 
     void SpawnearUnPrefab()
     {

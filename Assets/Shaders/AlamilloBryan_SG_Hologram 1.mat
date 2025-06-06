@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AlamilloBryan_SG_Hologram
+  m_Name: AlamilloBryan_SG_Hologram 1
   m_Shader: {fileID: -6465566751694194690, guid: d38b5835bded1bd4c9abf1faaf0cfc28,
     type: 3}
   m_Parent: {fileID: 0}
@@ -44,7 +44,7 @@ Material:
     - _Speed: 0.1
     - _Tama_oLinea: 0.193
     m_Colors:
-    - _MainColor: {r: 0.3236026, g: 7.622642, b: 7.230384, a: 0}
+    - _MainColor: {r: 45.78885, g: 45.78885, b: 45.78885, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &3650372465320598648
 MonoBehaviour:
