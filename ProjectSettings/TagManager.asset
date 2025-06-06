@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Botella
+  - Salida
+  - salida
   layers:
   - Default
   - TransparentFX
